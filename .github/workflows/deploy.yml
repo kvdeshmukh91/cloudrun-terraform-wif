@@ -14,6 +14,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Test authentication
+        run: gcloud auth list
+
       - name: Checkout code
         uses: actions/checkout@v4
 
