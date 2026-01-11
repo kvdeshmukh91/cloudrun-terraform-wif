@@ -1,13 +1,40 @@
-name: Workflow Visibility Test
+name: Deploy Cloud Run with Terraform (WIF)
 
 on:
   push:
     branches: [ "main" ]
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Say hello
-        run: echo "GitHub Actions is working"
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud (WIF)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: "projects/386782938570/locations/global/workloadIdentityPools/github-pool24/providers/github-provider"
+          service_account: "github-actions-sa@cloudrun-github-demo.iam.gserviceaccount.com"
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: cloudrun-github-demo
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        working-directory: terraform
+        run: terraform init
+
+      - name: Terraform Apply
+        working-directory: terraform
+        run: terraform apply -auto-approve
