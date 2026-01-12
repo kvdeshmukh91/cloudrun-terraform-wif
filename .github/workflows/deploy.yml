@@ -40,11 +40,12 @@ jobs:
 
       - name: Terraform Apply
         run: |
+         cd terraform
          terraform init
          terraform apply -auto-approve \
-           -var="project_id=cloudrun-github-demo" \
-           -var="region=us-central1" \
-           -var="image=gcr.io/cloudrun-github-demo/my-app:latest"
+          -var="project_id=cloudrun-github-demo" \
+          -var="image=gcr.io/cloudrun-github-demo/my-app:latest"
+
 
 
 
