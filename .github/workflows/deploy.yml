@@ -39,9 +39,12 @@ jobs:
         run: terraform init
 
       - name: Terraform Apply
-        working-directory: terraform
-        run: terraform apply -auto-approve -var="image=gcr.io/${{ secrets.GCP_PROJECT }}/my-app:latest"
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
-          CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT }}
+        run: |
+         terraform init
+         terraform apply -auto-approve \
+           -var="project_id=cloudrun-github-demo" \
+           -var="region=us-central1" \
+           -var="image=gcr.io/cloudrun-github-demo/my-app:latest"
+
+
 
