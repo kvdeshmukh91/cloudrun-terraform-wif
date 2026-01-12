@@ -21,30 +21,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ✅ WIF Authentication
+      # ✅ WIF Authentication (PROJECT NUMBER is correct here)
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: projects/XXXX/locations/global/workloadIdentityPools/github-pool03/providers/provider10
+          workload_identity_provider: projects/386782938570/locations/global/workloadIdentityPools/github-pool03/providers/provider10
           service_account: github-wif@cloudrun-github-demo.iam.gserviceaccount.com
 
       - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v2
 
-      # ✅ STEP 2 STARTS HERE
+      # ✅ Docker auth
       - name: Configure Docker
         run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
 
+      # ✅ BUILD (PROJECT ID, not number)
       - name: Build Docker image
         run: |
           docker build \
-            -t us-central1-docker.pkg.dev/$PROJECT_ID/$REPO/$IMAGE:latest \
+            -t us-central1-docker.pkg.dev/${PROJECT_ID}/${REPO}/${IMAGE}:latest \
             -f app/Dockerfile .
 
+      # ✅ PUSH
       - name: Push Docker image
         run: |
-          docker push us-central1-docker.pkg.dev/$PROJECT_ID/$REPO/$IMAGE:latest
-      # ✅ STEP 2 ENDS HERE
+          docker push us-central1-docker.pkg.dev/${PROJECT_ID}/${REPO}/${IMAGE}:latest
 
       # ✅ Terraform
       - name: Terraform Init
@@ -55,4 +56,6 @@ jobs:
       - name: Terraform Apply
         run: |
           cd terraform
-          terraform apply -auto-approve
+          terraform apply -auto-approve \
+            -var="project_id=${PROJECT_ID}" \
+            -var="image=us-central1-docker.pkg.dev/${PROJECT_ID}/${REPO}/${IMAGE}:latest"
