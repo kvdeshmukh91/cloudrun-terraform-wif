@@ -12,22 +12,6 @@ provider "google" {
   region  = var.region
 }
 
-variable "project_id" {
-  description = "GCP project ID"
-  type        = string
-}
-
-variable "region" {
-  description = "Cloud Run region"
-  type        = string
-  default     = "us-central1"
-}
-
-variable "image" {
-  description = "Container image URL"
-  type        = string
-}
-
 resource "google_cloud_run_service" "app" {
   name     = "cloudrun-terraform-wif"
   location = var.region
