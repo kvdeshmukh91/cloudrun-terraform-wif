@@ -37,7 +37,9 @@ jobs:
       - name: Build & Push Docker image
         run: |
           gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
-          docker build -t us-central1-docker.pkg.dev/cloudrun-github-demo/my-repo/my-app:latest .
+          docker build \
+            -t us-central1-docker.pkg.dev/cloudrun-github-demo/my-repo/my-app:latest \
+            -f app/Dockerfile app
           docker push us-central1-docker.pkg.dev/cloudrun-github-demo/my-repo/my-app:latest
 
       - name: Terraform Init
