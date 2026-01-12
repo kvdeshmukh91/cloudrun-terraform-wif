@@ -34,6 +34,12 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+      - name: Build & Push Docker image
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+          docker build -t us-central1-docker.pkg.dev/cloudrun-github-demo/my-repo/my-app:latest .
+          docker push us-central1-docker.pkg.dev/cloudrun-github-demo/my-repo/my-app:latest
+
       - name: Terraform Init
         working-directory: terraform
         run: terraform init
@@ -44,7 +50,7 @@ jobs:
          terraform init
          terraform apply -auto-approve \
           -var="project_id=cloudrun-github-demo" \
-          -var="image=gcr.io/cloudrun-github-demo/my-app:latest"
+          -var="image=us-central1-docker.pkg.dev/cloudrun-github-demo/my-repo/my-app:latest"
 
 
 
