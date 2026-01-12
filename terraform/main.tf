@@ -19,7 +19,7 @@ resource "google_cloud_run_service" "app" {
   template {
     spec {
       containers {
-        image = var.image
+        image = "us-central1-docker.pkg.dev/cloudrun-github-demo/my-repo/my-app:latest"
       }
     }
   }
